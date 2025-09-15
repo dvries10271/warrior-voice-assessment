@@ -1250,7 +1250,7 @@
                 <div class="success-icon">✅</div>
                 <div class="success-title">Assessment Complete!</div>
                 <div class="success-text">
-                    Thank you for completing the Warrior Voice assessment. Your personalized coaching profile is being prepared and will be ready shortly.
+                    Thank you for completing the personality assessment. Your personalized coaching profile is being prepared and will be ready shortly.
                 </div>
             </div>
         </div>
@@ -1527,6 +1527,7 @@
                 // Show success message
                 form.style.display = 'none';
                 successMessage.style.display = 'block';
+                loadingSpinner.style.display = 'none'; // Make sure spinner is hidden
                 progressFill.style.width = '100%';
                 progressText.textContent = 'Assessment complete!';
                 
