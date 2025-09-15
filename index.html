@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warrior Voice - Personality Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .assessment-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .question-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .question-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question {
+            margin-bottom: 30px;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .question-text {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-color: #667eea;
+        }
+
+        .option input[type="radio"] {
+            display: none;
+        }
+
+        .option-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            margin-right: 12px;
+            flex-shrink: 0;
+            position: relative;
+            margin-top: 2px;
+        }
+
+        .option.selected .option-indicator {
+            border-color: #667eea;
+        }
+
+        .option.selected .option-indicator::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .option-text {
+            flex: 1;
+            color: #444;
+            line-height: 1.4;
+        }
+
+        .user-info {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-back:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-back:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-next:hover,
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-next:disabled,
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .success-text {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .error-message {
+            display: none;
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .assessment-card {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .option {
+                padding: 12px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .btn-back {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="assessment-card">
+            <div class="header">
+                <div class="logo">⚔️</div>
+                <h1>Warrior Voice Assessment</h1>
+                <p class="subtitle">Discover your unique action style and core motivations to unlock personalized coaching</p>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Let's begin your journey</div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <form id="assessmentForm">
+                <!-- Section 0: User Information -->
+                <div class="question-section active" data-section="0">
+                    <div class="user-info">
+                        <h2 style="margin-bottom: 20px; color: #333;">Welcome, Warrior!</h2>
+                        <p style="margin-bottom: 20px; color: #666; line-height: 1.5;">
+                            This assessment will take about 5-7 minutes and will help us personalize your coaching experience.
+                        </p>
+                        
+                        <div class="form-group">
+                            <label for="userName">Your Name</label>
+                            <input type="text" id="userName" name="userName" required placeholder="Enter your name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="userEmail">Your Email</label>
+                            <input type="email" id="userEmail" name="userEmail" required placeholder="your@email.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 1: Fact Finder Questions (1-6) -->
+                <div class="question-section" data-section="1">
+                    <!-- Question 1 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">1</div>
+                            <div class="question-text">When starting a new project, I prefer to:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q1" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Research thoroughly and gather all available information first</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Get a basic overview and start working</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">2</div>
+                            <div class="question-text">In meetings, I tend to:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q2" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Ask detailed questions and want specific examples</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Focus on the main points and move forward</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">3</div>
+                            <div class="question-text">When making decisions, I:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q3" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Need comprehensive data and analysis</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Trust my instincts with basic information</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">4</div>
+                            <div class="question-text">When explaining something to others:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q4" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I provide detailed context and background information</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I give the essential points and move on</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">5</div>
+                            <div class="question-text">My ideal work environment includes:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q5" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Access to extensive resources and documentation</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Just the essentials to get the job done</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">6</div>
+                            <div class="question-text">When learning something new:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q6" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I want to understand the theory and principles deeply</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I prefer to learn the basics and figure out the rest</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Follow Thru Questions (7-12) -->
+                <div class="question-section" data-section="2">
+                    <!-- Question 7 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">7</div>
+                            <div class="question-text">My workspace is typically:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q7" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Highly organized with systems for everything</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Flexible and adapted to current needs</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 8 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">8</div>
+                            <div class="question-text">When it comes to routines:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q8" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I thrive with consistent schedules and procedures</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I prefer flexibility and spontaneity</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 9 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">9</div>
+                            <div class="question-text">I prefer projects that:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q9" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Have clear processes and defined steps</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q9" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Allow me to figure things out as I go</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 10 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">10</div>
+                            <div class="question-text">When planning activities:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q10" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I create detailed schedules and stick to them</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q10" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I keep things loose and adjust as needed</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 11 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">11</div>
+                            <div class="question-text">My approach to rules and procedures:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q11" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">They provide helpful structure and should be followed</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q11" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">They're guidelines that can be adapted</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 12 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">12</div>
+                            <div class="question-text">I feel most productive when:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q12" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Following a systematic approach</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q12" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Working in my own unique way</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Quick Start Questions (13-18) -->
+                <div class="question-section" data-section="3">
+                    <!-- Question 13 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">13</div>
+                            <div class="question-text">When faced with change:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q13" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I embrace it and see opportunities</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q13" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I prefer stability and predictability</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 14 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">14</div>
+                            <div class="question-text">My risk tolerance is:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q14" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">High - I'm comfortable with uncertainty</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q14" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Low - I prefer proven approaches</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 15 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">15</div>
+                            <div class="question-text">When starting something new:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q15" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I dive in immediately and learn by doing</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q15" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I prepare thoroughly before beginning</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 16 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">16</div>
+                            <div class="question-text">I prefer environments that are:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q16" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Dynamic and full of variety</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q16" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Stable and consistent</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 17 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">17</div>
+                            <div class="question-text">My ideal timeline for projects:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q17" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Short sprints with quick results</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q17" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Longer periods for thorough completion</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 18 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">18</div>
+                            <div class="question-text">Innovation and experimentation:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q18" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Excite me and drive my best work</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q18" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Are less important than proven methods</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Implementor Questions (19-24) -->
+                <div class="question-section" data-section="4">
+                    <!-- Question 19 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">19</div>
+                            <div class="question-text">I prefer to work with:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q19" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Physical tools and tangible materials</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q19" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Ideas and digital solutions</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 20 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">20</div>
+                            <div class="question-text">When solving problems:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q20" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I like to build or create physical solutions</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q20" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">I prefer planning and conceptual work</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 21 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">21</div>
+                            <div class="question-text">My learning style is:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q21" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Hands-on and experiential</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q21" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Theoretical and abstract</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 22 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">22</div>
+                            <div class="question-text">I feel most satisfied when:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q22" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Creating something I can touch and see</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q22" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Developing strategies and concepts</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 23 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">23</div>
+                            <div class="question-text">In my free time, I prefer:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q23" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Physical activities and hands-on hobbies</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q23" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Mental activities and abstract pursuits</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 24 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">24</div>
+                            <div class="question-text">My workspace needs:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q24" value="A">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Room for physical materials and movement</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q24" value="B">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Mainly digital tools and quiet thinking space</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Color Code Questions (25-36) -->
+                <div class="question-section" data-section="5">
+                    <!-- Question 25 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">25</div>
+                            <div class="question-text">What motivates me most:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q25" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Achieving results and winning</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q25" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Creating quality and meaningful connections</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q25" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Maintaining peace and balance</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q25" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Having fun and enjoying experiences</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 26 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">26</div>
+                            <div class="question-text">In conflicts, I typically:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q26" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Face them head-on to resolve quickly</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q26" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Seek understanding and the right solution</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q26" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Avoid confrontation and seek compromise</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q26" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Try to lighten the mood and move past it</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 27 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">27</div>
+                            <div class="question-text">My communication style is:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q27" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Direct and to the point</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q27" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Thoughtful and detailed</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q27" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Gentle and diplomatic</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q27" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Enthusiastic and expressive</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 28 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">28</div>
+                            <div class="question-text">I fear most:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q28" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Losing control or being ineffective</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q28" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Being wrong or making mistakes</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q28" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Confrontation and discord</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q28" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Being restricted or bored</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 29 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">29</div>
+                            <div class="question-text">My decision-making process:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q29" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Quick and decisive based on goals</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q29" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Careful analysis of all factors</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q29" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Considering everyone's needs</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q29" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Based on what feels exciting</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 30 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">30</div>
+                            <div class="question-text">In relationships, I value:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q30" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Respect and achievement together</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q30" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Deep understanding and loyalty</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q30" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Harmony and acceptance</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q30" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Fun and spontaneity</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 31 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">31</div>
+                            <div class="question-text">My approach to rules:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q31" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">They're obstacles to work around if needed</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q31" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">They should be understood and followed correctly</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q31" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">They help maintain order and peace</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q31" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">They're guidelines that shouldn't limit fun</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 32 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">32</div>
+                            <div class="question-text">I feel most energized when:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q32" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Accomplishing challenging goals</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q32" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Creating something meaningful</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q32" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Everything is calm and balanced</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q32" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Having new adventures</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 33 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">33</div>
+                            <div class="question-text">My leadership style tends to be:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q33" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Commanding and results-driven</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q33" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Thoughtful and principle-based</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q33" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Supportive and consensus-building</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q33" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Inspiring and enthusiastic</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 34 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">34</div>
+                            <div class="question-text">Under stress, I tend to:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q34" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Become more aggressive and demanding</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q34" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Withdraw and become overly critical</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q34" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Shut down and avoid the situation</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q34" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Become scattered and overly optimistic</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 35 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">35</div>
+                            <div class="question-text">People would describe me as:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q35" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Driven and competitive</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q35" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Thoughtful and perfectionist</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q35" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Easy-going and patient</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q35" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Charismatic and playful</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 36 -->
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">36</div>
+                            <div class="question-text">My core life philosophy is:</div>
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q36" value="RED">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Life is about achieving and conquering challenges</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q36" value="BLUE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Life is about meaning and doing things right</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q36" value="WHITE">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Life is about peace and contentment</div>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q36" value="YELLOW">
+                                <div class="option-indicator"></div>
+                                <div class="option-text">Life is about enjoying the journey</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="navigation">
+                    <button type="button" class="btn-back" id="btnBack" disabled>Back</button>
+                    <button type="button" class="btn-next" id="btnNext">Start Assessment</button>
+                    <button type="submit" class="btn-submit" id="btnSubmit" style="display: none;">Complete Assessment</button>
+                </div>
+            </form>
+
+            <div class="loading-spinner" id="loadingSpinner"></div>
+
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">✅</div>
+                <div class="success-title">Assessment Complete!</div>
+                <div class="success-text">
+                    Thank you for completing the Warrior Voice assessment. Your personalized coaching profile is being prepared and will be ready shortly.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const WEBHOOK_URL = 'https://YOUR-N8N-INSTANCE.com/webhook/personality-assessment'; // UPDATE THIS!
+        const TOTAL_SECTIONS = 6;
+        const QUESTIONS_PER_SECTION = {
+            0: 0, // User info section
+            1: 6, // Fact Finder
+            2: 6, // Follow Thru
+            3: 6, // Quick Start
+            4: 6, // Implementor
+            5: 12 // Color Code
+        };
+
+        // State
+        let currentSection = 0;
+        const responses = {};
+
+        // DOM Elements
+        const form = document.getElementById('assessmentForm');
+        const sections = document.querySelectorAll('.question-section');
+        const btnBack = document.getElementById('btnBack');
+        const btnNext = document.getElementById('btnNext');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            attachEventListeners();
+            updateProgress();
+        });
+
+        function attachEventListeners() {
+            // Navigation buttons
+            btnNext.addEventListener('click', nextSection);
+            btnBack.addEventListener('click', previousSection);
+            
+            // Form submission
+            form.addEventListener('submit', handleSubmit);
+            
+            // Radio button selections
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    // Update visual selection
+                    const option = e.target.closest('.option');
+                    const question = option.closest('.question');
+                    question.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    
+                    // Store response
+                    responses[e.target.name] = e.target.value;
+                    
+                    // Update navigation state
+                    updateNavigationState();
+                });
+            });
+            
+            // Text inputs
+            document.querySelectorAll('input[type="text"], input[type="email"]').forEach(input => {
+                input.addEventListener('input', updateNavigationState);
+            });
+        }
+
+        function updateNavigationState() {
+            if (currentSection === 0) {
+                // Check if user info is filled
+                const userName = document.getElementById('userName').value.trim();
+                const userEmail = document.getElementById('userEmail').value.trim();
+                btnNext.disabled = !userName || !userEmail || !validateEmail(userEmail);
+            } else {
+                // Check if all questions in current section are answered
+                const sectionQuestions = sections[currentSection].querySelectorAll('input[type="radio"]');
+                const requiredQuestions = new Set();
+                sectionQuestions.forEach(radio => requiredQuestions.add(radio.name));
+                
+                let allAnswered = true;
+                requiredQuestions.forEach(questionName => {
+                    if (!responses[questionName]) {
+                        allAnswered = false;
+                    }
+                });
+                
+                if (currentSection === TOTAL_SECTIONS - 1) {
+                    btnSubmit.disabled = !allAnswered;
+                } else {
+                    btnNext.disabled = !allAnswered;
+                }
+            }
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showSection(index) {
+            sections.forEach((section, i) => {
+                section.classList.toggle('active', i === index);
+            });
+            
+            // Update button visibility
+            btnBack.disabled = index === 0;
+            
+            if (index === TOTAL_SECTIONS - 1) {
+                btnNext.style.display = 'none';
+                btnSubmit.style.display = 'block';
+            } else {
+                btnNext.style.display = 'block';
+                btnSubmit.style.display = 'none';
+                
+                if (index === 0) {
+                    btnNext.textContent = 'Start Assessment';
+                } else {
+                    btnNext.textContent = 'Next';
+                }
+            }
+            
+            updateNavigationState();
+            updateProgress();
+        }
+
+        function nextSection() {
+            if (currentSection < TOTAL_SECTIONS - 1) {
+                currentSection++;
+                showSection(currentSection);
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 0) {
+                currentSection--;
+                showSection(currentSection);
+            }
+        }
+
+        function updateProgress() {
+            let totalQuestions = 36;
+            let answeredQuestions = Object.keys(responses).filter(key => key.startsWith('q')).length;
+            
+            if (currentSection === 0) {
+                progressFill.style.width = '0%';
+                progressText.textContent = 'Let\'s begin your journey';
+            } else {
+                const progress = (answeredQuestions / totalQuestions) * 100;
+                progressFill.style.width = `${progress}%`;
+                
+                const sectionNames = ['', 'Fact Finder', 'Follow Thru', 'Quick Start', 'Implementor', 'Core Motivations'];
+                progressText.textContent = `Section ${currentSection} of ${TOTAL_SECTIONS - 1}: ${sectionNames[currentSection]} (${answeredQuestions}/36 questions)`;
+            }
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            // Hide error message if visible
+            errorMessage.style.display = 'none';
+            
+            // Collect all responses
+            const assessmentData = {
+                timestamp: new Date().toISOString(),
+                user: {
+                    name: document.getElementById('userName').value.trim(),
+                    email: document.getElementById('userEmail').value.trim()
+                },
+                responses: {},
+                metadata: {
+                    completionTime: Date.now(),
+                    userAgent: navigator.userAgent
+                }
+            };
+            
+            // Add all question responses
+            for (let i = 1; i <= 36; i++) {
+                const questionName = `q${i}`;
+                assessmentData.responses[questionName] = responses[questionName] || null;
+            }
+            
+            // Show loading state
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Submitting...';
+            loadingSpinner.style.display = 'block';
+            
+            try {
+                // Send to webhook
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(assessmentData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Show success message
+                form.style.display = 'none';
+                successMessage.style.display = 'block';
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Assessment complete!';
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                
+                // Show error message
+                errorMessage.textContent = 'There was an error submitting your assessment. Please check your connection and try again.';
+                errorMessage.style.display = 'block';
+                
+                // Reset button state
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = 'Complete Assessment';
+                loadingSpinner.style.display = 'none';
+                
+                // Scroll to error message
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    </script>
+</body>
+</html>
