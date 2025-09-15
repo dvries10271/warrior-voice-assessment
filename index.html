@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LGE Personality Assessment</title>
+    <title>Warrior Voice - Personality Assessment</title>
     <style>
         * {
             margin: 0;
@@ -1258,7 +1258,7 @@
 
     <script>
         // Configuration
-        const WEBHOOK_URL = 'https://n8n-production-3280.up.railway.app/webhook/personality-assessment'; // UPDATE THIS!
+        const WEBHOOK_URL = 'https://n8n-production-3280.up.railway.app/webhook/personality-assessment';
         const TOTAL_SECTIONS = 6;
         const QUESTIONS_PER_SECTION = {
             0: 0, // User info section
@@ -1506,13 +1506,13 @@
             loadingSpinner.style.display = 'block';
             
             try {
-                // Send to webhook - n8n expects the data in body.body
+                // Send to webhook - n8n expects the data directly, not wrapped
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ body: assessmentData })
+                    body: JSON.stringify(assessmentData)
                 });
                 
                 if (!response.ok) {
